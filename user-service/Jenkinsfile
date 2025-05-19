@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_NAME = 'user-service'
+        IMAGE_NAME = "user-service:dev"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Santyet/ecommerce-microservice-backend-app.git'
+            }
+        }
+
+        stage('Build JAR') {
+            steps {
+                dir("${env.PROJECT_NAME}") {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir("${env.PROJECT_NAME}") {
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                sh "docker run -d -p 8700:8700 --name user-service-dev ${IMAGE_NAME}"
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+    }
+}
