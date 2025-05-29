@@ -5,7 +5,10 @@ services:
     ports:
       - 9411:9411
   service-discovery-container:
-    image: selimhorri/service-discovery-ecommerce-boot:0.1.0
+    image: santyet/service-discovery:latest
+    build:
+      context: ./service-discovery
+      dockerfile: Dockerfile
     ports:
       - 8761:8761
     environment:
@@ -21,6 +24,7 @@ services:
       zipkin-container:
         condition: service_started
   cloud-config-container:
+    image: santyet/cloud-config:latest
     build:
       context: ./cloud-config
       dockerfile: Dockerfile
@@ -43,7 +47,10 @@ services:
       zipkin-container:
         condition: service_started
   api-gateway-container:
-    image: selimhorri/api-gateway-ecommerce-boot:0.1.0
+    image: santyet/api-gateway:latest
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
     ports:
       - 8080:8080
     environment:
@@ -59,7 +66,10 @@ services:
       zipkin-container:
         condition: service_started
   proxy-client-container:
-    image: selimhorri/proxy-client-ecommerce-boot:0.1.0
+    image: santyet/proxy-client:latest
+    build:
+      context: ./proxy-client
+      dockerfile: Dockerfile
     ports:
       - 8900:8900
     environment:
@@ -75,7 +85,10 @@ services:
       zipkin-container:
         condition: service_started
   order-service-container:
-    image: selimhorri/order-service-ecommerce-boot:0.1.0
+    image: santyet/order-service:latest
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
     ports:
       - 8300:8300
     environment:
@@ -91,7 +104,7 @@ services:
       zipkin-container:
         condition: service_started
   payment-service-container:
-    image: selimhorri/payment-service-ecommerce-boot:0.1.0
+    image: santyet/payment-service:latest
     ports:
       - 8400:8400
     environment:
@@ -107,7 +120,10 @@ services:
       zipkin-container:
         condition: service_started
   product-service-container:
-    image: selimhorri/product-service-ecommerce-boot:0.1.0
+    image: santyet/product-service:latest
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
     ports:
       - 8500:8500
     environment:
@@ -123,7 +139,10 @@ services:
       zipkin-container:
         condition: service_started
   shipping-service-container:
-    image: selimhorri/shipping-service-ecommerce-boot:0.1.0
+    image: santyet/shipping-service:latest
+    build:
+      context: ./shipping-service
+      dockerfile: Dockerfile
     ports:
       - 8600:8600
     environment:
@@ -139,7 +158,10 @@ services:
       zipkin-container:
         condition: service_started
   user-service-container:
-    image: selimhorri/user-service-ecommerce-boot:0.1.0
+    image: santyet/user-service:latest
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
     ports:
       - 8700:8700
     environment:
@@ -155,7 +177,10 @@ services:
       zipkin-container:
         condition: service_started
   favourite-service-container:
-    image: selimhorri/favourite-service-ecommerce-boot:0.1.0
+    image: santyet/favourite-service:latest
+    build:
+      context: ./favourite-service
+      dockerfile: Dockerfile
     ports:
       - 8800:8800
     environment:
