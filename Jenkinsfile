@@ -17,40 +17,55 @@ pipeline {
 
     stages {
 
+        stages {
+
         stage('Setup') {
             steps {
                 sh '''
                 export PATH=$HOME/bin:$PATH
 
                 if ! command -v kubectl &> /dev/null; then
+                    echo "kubectl no encontrado, instalando..."
                     mkdir -p $HOME/bin
-                    curl -s https://dl.k8s.io/release/stable.txt
-                    curl -LO https://dl.k8s.io/release/<html>
-                    <head><title>302 Found</title></head>
-                    <body>
-                    <center><h1>302 Found</h1></center>
-                    <hr><center>nginx</center>
-                    </body>
-                    </html>
-                    /bin/linux/amd64/kubectl
+                    # Captura la versión estable en una variable
+                    KUBECTL_STABLE_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt)
+                    echo "Versión estable de kubectl: ${KUBECTL_STABLE_VERSION}"
+                    # Usa la variable para construir la URL de descarga
+                    curl -LO "https://dl.k8s.io/release/${KUBECTL_STABLE_VERSION}/bin/linux/amd64/kubectl"
                     chmod +x kubectl && mv kubectl $HOME/bin/
+                    echo "kubectl instalado en $HOME/bin/"
+                else
+                    echo "kubectl ya está instalado."
                 fi
 
                 if [ ! -d $HOME/java11 ]; then
+                    echo "Directorio Java 11 no encontrado, instalando..."
                     curl -L -o /tmp/openjdk-11.tar.gz https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
                     tar -xzf /tmp/openjdk-11.tar.gz -C $HOME
                     mv $HOME/jdk-11.0.2 $HOME/java11
+                    echo "Java 11 instalado en $HOME/java11"
+                else
+                    echo "Java 11 ya está instalado."
                 fi
 
                 export JAVA_HOME=$HOME/java11
                 export PATH=$JAVA_HOME/bin:$PATH
 
                 if ! command -v mvn &> /dev/null; then
+                    echo "Maven no encontrado, instalando..."
                     curl -sL https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz | tar -xz -C $HOME
                     mv $HOME/apache-maven-3.8.6 $HOME/maven
+                    echo "Maven instalado en $HOME/maven"
+                else
+                    echo "Maven ya está instalado."
                 fi
 
                 export PATH=$HOME/maven/bin:$PATH
+                echo "PATH configurado: $PATH"
+                echo "JAVA_HOME configurado: $JAVA_HOME"
+                # Opcional: verificar versiones
+                # mvn -version
+                # kubectl version --client
                 '''
             }
         }
