@@ -116,29 +116,21 @@ pipeline {
             }
         }
 
-        stage('Release Notes') {
+        stage('Generar Release Notes') {
             when {
-                environment name: 'SELECTED_ENV', value: 'prod'
+                expression { return env.SELECTED_ENV == 'prod' }
             }
             steps {
-                // Aquí es donde se "pone" tu token de forma segura en la variable GH_TOKEN
-                withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-                    script {
-                        def tag = "rel-${new Date().format('yyMMdd-HHmm')}"
-                        def commit = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
-                        def msg = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
-
-                        sh """
-                            git config user.email "admin@admin.com"
-                            git config user.name "Santyet"
-                            // La variable GH_TOKEN (que contiene tu token) se usa aquí
-                            git config --global url."https://oauth2:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
-
-                            git tag ${tag} -m "Release generado automáticamente"
-                            git push origin ${tag}
-
-                            // El CLI de 'gh' también usará GH_TOKEN del entorno para autenticarse
-                            gh release create ${tag} --title "🚀 Versión ${tag}" --notes "
+                withCredentials([usernamePassword(credentialsId: 'b7426028-9f47-4b31-9456-cb9fc0c25da1', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                    script {                        echo "Generating Release Notes for PROD environment..."
+                        def now = new Date()
+                        // Format: vYEAR.MONTH.DAY.HOURMINUTE (e.g., v2023.05.15.1430)
+                        def tag = "v${now.format('yyyy.MM.dd.HHmm')}"
+                        def title = "🚀 Production Release ${tag}"
+                        def releaseDate = now.format('MMMM dd, yyyy \'at\' HH:mm')
+                        
+                        // Create formatted release notes
+                        def releaseNotes = """
 🧾 **Resumen de versión**
 - Fecha: ${new Date().format('yyyy-MM-dd HH:mm')}
 - Último commit: ${commit}
