@@ -7,13 +7,13 @@ pipeline {
             choices: ['dev', 'stage', 'prod'],
             description: 'Ambiente de despliegue'
         )
-    }
-
-    environment {
+    }    environment {
         DOCKER_NAMESPACE = "kenbra"
         K8S_NAMESPACE = "default"
         SELECTED_ENV = "${params.ENVIRONMENT}"
-    }    stages {
+    }
+
+    stages {
 
         stage('Setup') {
             steps {
