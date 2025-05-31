@@ -24,7 +24,15 @@ pipeline {
 
                 if ! command -v kubectl &> /dev/null; then
                     mkdir -p $HOME/bin
-                    curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                    curl -s https://dl.k8s.io/release/stable.txt
+                    curl -LO https://dl.k8s.io/release/<html>
+                    <head><title>302 Found</title></head>
+                    <body>
+                    <center><h1>302 Found</h1></center>
+                    <hr><center>nginx</center>
+                    </body>
+                    </html>
+                    /bin/linux/amd64/kubectl
                     chmod +x kubectl && mv kubectl $HOME/bin/
                 fi
 
