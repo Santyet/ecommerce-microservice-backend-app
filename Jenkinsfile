@@ -121,7 +121,7 @@ pipeline {
                 expression { return env.SELECTED_ENV == 'prod' }
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'b7426028-9f47-4b31-9456-cb9fc0c25da1', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: '5f03ddc6-58de-4141-bdb5-bade9a59a7c3', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
                     script {                        echo "Generating Release Notes for PROD environment..."
                         def now = new Date()
                         // Format: vYEAR.MONTH.DAY.HOURMINUTE (e.g., v2023.05.15.1430)
