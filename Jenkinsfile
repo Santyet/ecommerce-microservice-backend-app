@@ -121,6 +121,7 @@ pipeline {
                 environment name: 'SELECTED_ENV', value: 'prod'
             }
             steps {
+                // Aquí es donde se "pone" tu token de forma segura en la variable GH_TOKEN
                 withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
                     script {
                         def tag = "rel-${new Date().format('yyMMdd-HHmm')}"
@@ -130,11 +131,13 @@ pipeline {
                         sh """
                             git config user.email "admin@admin.com"
                             git config user.name "Santyet"
-                            git config --global url."https://oauth2:${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}@github.com/".insteadOf "https://github.com/"
+                            // La variable GH_TOKEN (que contiene tu token) se usa aquí
+                            git config --global url."https://oauth2:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
 
                             git tag ${tag} -m "Release generado automáticamente"
                             git push origin ${tag}
 
+                            // El CLI de 'gh' también usará GH_TOKEN del entorno para autenticarse
                             gh release create ${tag} --title "🚀 Versión ${tag}" --notes "
 🧾 **Resumen de versión**
 - Fecha: ${new Date().format('yyyy-MM-dd HH:mm')}
