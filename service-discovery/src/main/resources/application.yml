@@ -31,7 +31,12 @@ management:
       show-details: always
 
 
-
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://service-discovery:8761/eureka/}
+  instance:
+      hostname: ${EUREKA_INSTANCE:service-discovery}
 
 
 

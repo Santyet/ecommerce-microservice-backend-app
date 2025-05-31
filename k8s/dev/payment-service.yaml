@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payment-service-dev
+  name: payment-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: payment-service-dev
+      app: payment-service
   template:
     metadata:
       labels:
-        app: payment-service-dev
+        app: payment-service
     spec:
       containers:
         - name: payment-service
@@ -26,14 +26,16 @@ spec:
               value: "optional:configserver:http://cloud-config:9296"
             - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
               value: "http://service-discovery:8761/eureka/"
+            - name: EUREKA_INSTANCE
+              value: "payment-service"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: payment-service-dev
+  name: payment-service
 spec:
   selector:
-    app: payment-service-dev
+    app: payment-service
   ports:
     - protocol: TCP
       port: 8400

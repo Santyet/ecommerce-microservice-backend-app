@@ -22,6 +22,8 @@ spec:
               value: "dev"
             - name: SPRING_ZIPKIN_BASE_URL
               value: "http://zipkin:9411"
+            - name: EUREKA_INSTANCE
+              value: "service-discovery"
 ---
 apiVersion: v1
 kind: Service

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloud-config
+  name: proxy-client
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cloud-config
+      app: proxy-client
   template:
     metadata:
       labels:
-        app: cloud-config
+        app: proxy-client
     spec:
       containers:
-        - name: cloud-config
-          image: santyet/cloud-config:latest
+        - name: proxy-client
+          image: santyet/proxy-client:latest
           ports:
-            - containerPort: 9296
+            - containerPort: 8900
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "dev"
@@ -26,16 +26,18 @@ spec:
               value: "http://service-discovery:8761/eureka/"
             - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
               value: "http://service-discovery:8761/eureka/"
+            - name: EUREKA_INSTANCE
+              value: "proxy-client"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cloud-config
+  name: proxy-client
 spec:
   selector:
-    app: cloud-config
+    app: proxy-client
   ports:
     - protocol: TCP
-      port: 9296
-      targetPort: 9296
+      port: 8900
+      targetPort: 8900
   type: ClusterIP

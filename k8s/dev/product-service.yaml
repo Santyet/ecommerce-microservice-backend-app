@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payment-service-dev
+  name: product-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: payment-service-dev
+      app: product-service
   template:
     metadata:
       labels:
-        app: payment-service-dev
+        app: product-service
     spec:
       containers:
         - name: payment-service
           image: santyet/payment-service:latest
           ports:
-            - containerPort: 8400
+            - containerPort: 8500
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "dev"
@@ -26,16 +26,18 @@ spec:
               value: "optional:configserver:http://cloud-config:9296"
             - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
               value: "http://service-discovery:8761/eureka/"
+            - name: EUREKA_INSTANCE
+              value: "product-service"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: payment-service-dev
+  name: product-service
 spec:
   selector:
-    app: payment-service-dev
+    app: product-service
   ports:
     - protocol: TCP
-      port: 8400
-      targetPort: 8400
+      port: 8500
+      targetPort: 8500
   type: ClusterIP
