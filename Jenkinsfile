@@ -141,21 +141,24 @@ pipeline {
 
         stage('Generar Release Notes') {
             when {
+                // Usar expression para comparar strings es más robusto
                 expression { return env.SELECTED_ENV == 'prod' }
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: '5f03ddc6-58de-4141-bdb5-bade9a59a7c3', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-                    script {                        echo "Generating Release Notes for PROD environment..."
+                    script {
+                        echo "Generating Release Notes for PROD environment..."
                         def now = new Date()
-                        // Format: vYEAR.MONTH.DAY.HOURMINUTE (e.g., v2023.05.15.1430)
                         def tag = "v${now.format('yyyy.MM.dd.HHmm')}"
                         def title = "🚀 Production Release ${tag}"
-                        def releaseDate = now.format('MMMM dd, yyyy \'at\' HH:mm')
                         
-                        // Create formatted release notes
+                        // Obtener commit y mensaje del commit
+                        def commit = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                        def msg = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+
                         def releaseNotes = """
 🧾 **Resumen de versión**
-- Fecha: ${new Date().format('yyyy-MM-dd HH:mm')}
+- Fecha: ${now.format('yyyy-MM-dd HH:mm')}
 - Último commit: ${commit}
 - Detalle: ${msg}
 
@@ -163,8 +166,27 @@ pipeline {
 API Gateway, Order, Payment, Product, User, Shipping, Favourite, Proxy-client
 
 ✅ Estado: Despliegue exitoso en producción
-"
+"""
+                        echo "Contenido de las notas de release:"
+                        echo releaseNotes
+
+                        // Comandos Git y GitHub CLI
+                        sh """
+                            echo "Configurando Git..."
+                            git config user.email "ci@auto-release.com"
+                            git config user.name "Jenkins CI"
+                            # La variable GH_TOKEN (que contiene tu token) se usa aquí
+                            git config --global url."https://oauth2:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+                            echo "Creando tag ${tag}..."
+                            git tag ${tag} -m "Release ${tag} generado automáticamente"
+                            echo "Haciendo push del tag ${tag}..."
+                            git push origin ${tag}
+
+                            echo "Creando release en GitHub para el tag ${tag}..."
+                            gh release create ${tag} --title "${title}" --notes "${releaseNotes}"
                         """
+                        echo "Release notes generadas y publicadas para ${tag}"
                     }
                 }
             }
