@@ -13,11 +13,7 @@ pipeline {
         DOCKER_NAMESPACE = "kenbra"
         K8S_NAMESPACE = "default"
         SELECTED_ENV = "${params.ENVIRONMENT}"
-    }
-
-    stages {
-
-        stages {
+    }    stages {
 
         stage('Setup') {
             steps {
