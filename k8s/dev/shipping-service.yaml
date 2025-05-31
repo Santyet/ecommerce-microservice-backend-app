@@ -13,8 +13,8 @@ spec:
         app: shipping-service
     spec:
       containers:
-        - name: payment-service
-          image: santyet/payment-service:latest
+        - name: shipping-service
+          image: santyet/shipping-service:latest
           ports:
             - containerPort: 8600
           env:
@@ -22,8 +22,6 @@ spec:
               value: "dev"
             - name: SPRING_ZIPKIN_BASE_URL
               value: "http://zipkin:9411"
-            - name: SPRING_CONFIG_IMPORT
-              value: "optional:configserver:http://cloud-config:9296"
             - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
               value: "http://service-discovery:8761/eureka/"
             - name: EUREKA_INSTANCE

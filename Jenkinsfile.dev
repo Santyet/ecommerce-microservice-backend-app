@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build without Tests') {
+            steps {
+                script {
+                    
+                    sh '''
+                    cd /tmp
+                    curl -L -o openjdk-11.tar.gz https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+                    tar -xzf openjdk-11.tar.gz
+                    rm -rf $HOME/java11
+                    mv jdk-11.0.2 $HOME/java11
+                    cd -
+
+
+                    export JAVA_HOME=$HOME/java11
+                    export PATH=$HOME/java11/bin:$PATH
+                    chmod +x mvnw
+
+                    rm -rf $HOME/maven
+                    cd /tmp
+                    curl -sL https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz -o apache-maven-3.8.6-bin.tar.gz
+                    tar -xzf apache-maven-3.8.6-bin.tar.gz
+                    mv apache-maven-3.8.6 $HOME/maven
+                    export PATH=$HOME/maven/bin:$PATH
+                    echo 'export PATH=$HOME/maven/bin:$PATH' >> ~/.bashrc
+                    cd -
+                    ./mvnw clean package -DskipTests
+                    '''
+                }
+                echo 'Project built successfully, skipping tests.'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Build finished.'
+        }
+        success {
+            echo 'Build was successful!'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+}

@@ -105,6 +105,9 @@ services:
         condition: service_started
   payment-service-container:
     image: santyet/payment-service:latest
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
     ports:
       - 8400:8400
     environment:
