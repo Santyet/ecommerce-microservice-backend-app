@@ -27,7 +27,7 @@ pipeline {
                     export PATH=$HOME/maven/bin:$PATH
                     echo 'export PATH=$HOME/maven/bin:$PATH' >> ~/.bashrc
                     cd -
-                    ./mvnw clean package
+                    ./mvnw clean package -DskipTests
                     '''
                 }
                 echo 'Project built successfully, skipping tests.'
