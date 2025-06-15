@@ -1,43 +1,43 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: order-service
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: order-service
-  template:
-    metadata:
-      labels:
-        app: order-service
-    spec:
-      containers:
-        - name: order-service
-          image: santyet/order-service:latest
-          ports:
-            - containerPort: 8300
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: "dev"
-            - name: SPRING_ZIPKIN_BASE_URL
-              value: "http://zipkin:9411"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://service-discovery:8761/eureka/"
-            - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
-              value: "http://service-discovery:8761/eureka/"
-            - name: EUREKA_INSTANCE
-              value: "order-service"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: order-service
-spec:
-  selector:
-    app: order-service
-  ports:
-    - protocol: TCP
-      port: 8300
-      targetPort: 8300
-  type: ClusterIP
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: order-service
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: order-service
+#   template:
+#     metadata:
+#       labels:
+#         app: order-service
+#     spec:
+#       containers:
+#         - name: order-service
+#           image: santyet/order-service:latest
+#           ports:
+#             - containerPort: 8300
+#           env:
+#             - name: SPRING_PROFILES_ACTIVE
+#               value: "dev"
+#             - name: SPRING_ZIPKIN_BASE_URL
+#               value: "http://zipkin:9411"
+#             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+#               value: "http://service-discovery:8761/eureka/"
+#             - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+#               value: "http://service-discovery:8761/eureka/"
+#             - name: EUREKA_INSTANCE
+#               value: "order-service"
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: order-service
+# spec:
+#   selector:
+#     app: order-service
+#   ports:
+#     - protocol: TCP
+#       port: 8300
+#       targetPort: 8300
+#   type: ClusterIP
